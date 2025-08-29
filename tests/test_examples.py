@@ -6,22 +6,23 @@ from typing import Dict, Any
 # Note: These tests will require pydantic to be installed
 # For now, they serve as examples of how the models would be used
 
+
 def test_basic_asyncapi_document():
     """Test creating a basic AsyncAPI document."""
-    
+
     # Example AsyncAPI 3.0.0 document
     asyncapi_doc = {
         "asyncapi": "3.0.0",
         "info": {
             "title": "Streetlights API",
             "version": "1.0.0",
-            "description": "The Smartylighting Streetlights API allows you to remotely manage the city lights."
+            "description": "The Smartylighting Streetlights API allows you to remotely manage the city lights.",
         },
         "servers": {
             "production": {
                 "host": "api.streetlights.smartylighting.com",
                 "protocol": "mqtt",
-                "description": "Production MQTT broker"
+                "description": "Production MQTT broker",
             }
         },
         "channels": {
@@ -39,41 +40,39 @@ def test_basic_asyncapi_document():
                                 "lumens": {
                                     "type": "integer",
                                     "minimum": 0,
-                                    "description": "Light intensity measured in lumens."
+                                    "description": "Light intensity measured in lumens.",
                                 },
                                 "sentAt": {
                                     "type": "string",
                                     "format": "date-time",
-                                    "description": "Date and time when the message was sent."
-                                }
-                            }
-                        }
+                                    "description": "Date and time when the message was sent.",
+                                },
+                            },
+                        },
                     }
-                }
+                },
             }
         },
         "operations": {
             "receiveLightMeasurement": {
                 "action": "receive",
-                "channel": {
-                    "$ref": "#/channels/lightingMeasured"
-                },
-                "summary": "Receive lighting measurement"
+                "channel": {"$ref": "#/channels/lightingMeasured"},
+                "summary": "Receive lighting measurement",
             }
-        }
+        },
     }
-    
+
     # This would be used like:
     # from asyncapi_pydantics import AsyncAPI
     # doc = AsyncAPI(**asyncapi_doc)
-    
+
     assert asyncapi_doc["asyncapi"] == "3.0.0"
     assert asyncapi_doc["info"]["title"] == "Streetlights API"
 
 
 def test_info_object():
     """Test Info object creation."""
-    
+
     info_data = {
         "title": "Sample API",
         "version": "1.0.0",
@@ -81,25 +80,25 @@ def test_info_object():
         "contact": {
             "name": "API Support",
             "url": "https://www.example.com/support",
-            "email": "support@example.com"
+            "email": "support@example.com",
         },
         "license": {
             "name": "Apache 2.0",
-            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
-        }
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
+        },
     }
-    
+
     # This would be used like:
     # from asyncapi_pydantics import Info
     # info = Info(**info_data)
-    
+
     assert info_data["title"] == "Sample API"
     assert info_data["contact"]["email"] == "support@example.com"
 
 
 def test_server_object():
     """Test Server object creation."""
-    
+
     server_data = {
         "host": "kafka.in.mycompany.com:9092",
         "protocol": "kafka",
@@ -109,22 +108,22 @@ def test_server_object():
             "env": {
                 "enum": ["production", "staging"],
                 "default": "production",
-                "description": "Environment to connect to"
+                "description": "Environment to connect to",
             }
-        }
+        },
     }
-    
+
     # This would be used like:
     # from asyncapi_pydantics import Server
     # server = Server(**server_data)
-    
+
     assert server_data["protocol"] == "kafka"
     assert server_data["variables"]["env"]["default"] == "production"
 
 
 def test_message_object():
     """Test Message object creation."""
-    
+
     message_data = {
         "name": "UserSignup",
         "title": "User signup",
@@ -135,9 +134,9 @@ def test_message_object():
             "properties": {
                 "correlationId": {
                     "description": "Correlation ID set by application",
-                    "type": "string"
+                    "type": "string",
                 }
-            }
+            },
         },
         "payload": {
             "type": "object",
@@ -146,17 +145,17 @@ def test_message_object():
                     "type": "object",
                     "properties": {
                         "id": {"type": "string"},
-                        "email": {"type": "string", "format": "email"}
-                    }
+                        "email": {"type": "string", "format": "email"},
+                    },
                 }
-            }
-        }
+            },
+        },
     }
-    
+
     # This would be used like:
     # from asyncapi_pydantics import Message
     # message = Message(**message_data)
-    
+
     assert message_data["name"] == "UserSignup"
     assert message_data["contentType"] == "application/json"
 

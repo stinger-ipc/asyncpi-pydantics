@@ -1,0 +1,99 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        exclude:
+          # Reduce matrix size by excluding some combinations
+          - os: windows-latest
+            python-version: "3.8"
+          - os: macos-latest
+            python-version: "3.8"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        # Install a specific version of uv
+        version: "0.4.18"
+
+    - name: Set up Python ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        uv sync --all-extras
+
+    - name: Run tests with pytest
+      run: |
+        uv run pytest tests/ -v
+
+    - name: Run type checking with mypy
+      run: |
+        uv run mypy asyncapi_pydantics/
+      continue-on-error: true  # Don't fail the build on mypy errors for now
+
+    - name: Check code formatting with black
+      run: |
+        uv run black --check asyncapi_pydantics/ tests/
+
+    - name: Check import sorting with isort
+      run: |
+        uv run isort --check-only asyncapi_pydantics/ tests/
+
+  test-examples:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Set up Python
+      run: uv python install 3.11
+
+    - name: Install dependencies
+      run: |
+        uv sync
+
+    - name: Run example scripts
+      run: |
+        uv run python examples/streetlights_example.py
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Set up Python
+      run: uv python install 3.11
+
+    - name: Install dependencies with coverage
+      run: |
+        uv sync --all-extras
+        uv add --dev pytest-cov
+
+    - name: Run tests with coverage
+      run: |
+        uv run pytest tests/ --cov=asyncapi_pydantics --cov-report=xml --cov-report=term
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false

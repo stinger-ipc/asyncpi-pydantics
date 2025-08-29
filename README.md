@@ -12,19 +12,7 @@ A Python library providing Pydantic models for AsyncAPI 3.0.0 specification docu
 
 ## Installation
 
-This project uses `uv` for dependency management. To install:
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd asyncapi-pydantics
-
-# Install with uv
-uv pip install -e .
-
-# Or install from PyPI (when published)
-uv pip install asyncapi-pydantics
-```
+This project uses `uv` for dependency management. 
 
 ## Quick Start
 
@@ -76,6 +64,7 @@ print(f"Channels: {list(api.channels.keys()) if api.channels else []}")
 This library provides Pydantic models for all AsyncAPI 3.0.0 objects:
 
 ### Core Objects
+
 - `AsyncAPI` - Root AsyncAPI document
 - `Info` - API metadata
 - `Contact` - Contact information
@@ -84,27 +73,32 @@ This library provides Pydantic models for all AsyncAPI 3.0.0 objects:
 - `ServerVariable` - Server URL variables
 
 ### Channel & Message Objects
+
 - `Channel` - Communication channel
 - `Message` - Message definition
 - `Parameter` - Channel parameters
 - `CorrelationId` - Message correlation
 
 ### Operation Objects
+
 - `Operation` - API operation
 - `OperationTrait` - Reusable operation properties
 - `OperationReply` - Operation reply definition
 - `OperationReplyAddress` - Reply address specification
 
 ### Schema Objects
+
 - `Schema` - JSON Schema with AsyncAPI extensions
 - `MultiFormatSchema` - Multi-format schema support
 
 ### Security Objects
+
 - `SecurityScheme` - Security scheme definition
 - `OAuthFlows` - OAuth flow configurations
 - `OAuthFlow` - Individual OAuth flow
 
 ### Utility Objects
+
 - `Components` - Reusable components
 - `Tag` - Categorization tags
 - `ExternalDocumentation` - External documentation links
@@ -152,54 +146,6 @@ print(f"API: {streetlights_api.info.title}")
 print(f"Server: {list(streetlights_api.servers.keys())[0]}")
 ```
 
-### Kafka API Example
-
-```python
-from asyncapi_pydantics import AsyncAPI
-
-kafka_api = AsyncAPI(**{
-    "asyncapi": "3.0.0",
-    "info": {
-        "title": "User Events API",
-        "version": "2.0.0"
-    },
-    "servers": {
-        "kafka-cluster": {
-            "host": "kafka.example.com:9092",
-            "protocol": "kafka",
-            "security": [{"sasl": []}]
-        }
-    },
-    "channels": {
-        "user-events": {
-            "address": "user.events.v1",
-            "messages": {
-                "userCreated": {
-                    "contentType": "application/json",
-                    "payload": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "string"},
-                            "name": {"type": "string"},
-                            "email": {"type": "string", "format": "email"},
-                            "createdAt": {"type": "string", "format": "date-time"}
-                        },
-                        "required": ["id", "name", "email", "createdAt"]
-                    }
-                }
-            }
-        }
-    },
-    "operations": {
-        "publishUserCreated": {
-            "action": "send",
-            "channel": {"$ref": "#/channels/user-events"},
-            "messages": [{"$ref": "#/channels/user-events/messages/userCreated"}]
-        }
-    }
-})
-```
-
 ## Development
 
 This project uses `uv` for dependency management and development.
@@ -212,10 +158,8 @@ git clone <repository-url>
 cd asyncapi-pydantics
 
 # Install dependencies
-uv pip install -e ".[dev]"
+uv sync
 
-# Install pre-commit hooks
-pre-commit install
 ```
 
 ### Running Tests
@@ -235,7 +179,7 @@ uv run mypy asyncapi_pydantics
 
 ```bash
 # Format code
-uv run black asyncapi_pydantics tests examples
+uv format
 
 # Sort imports
 uv run isort asyncapi_pydantics tests examples
@@ -291,6 +235,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Changelog
 
 ### 0.1.0
+
 - Initial release
 - Complete AsyncAPI 3.0.0 specification support
 - All core objects implemented
