@@ -1,0 +1,54 @@
+[project]
+name = "asyncapi-pydantics"
+version = "0.1.0"
+description = "Pydantic models for AsyncAPI 3.0.0 specification"
+authors = [
+    {name = "Jacob Brunson", email = "git@jacobbrunson.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pydantic[email]>=2.0.0",
+    "pytest>=8.3.5",
+    "typing-extensions>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "mypy>=1.0.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "pre-commit>=3.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[dependency-groups]
+dev = [
+    "black>=24.8.0",
+]
